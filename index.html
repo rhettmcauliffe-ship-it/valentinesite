@@ -16,7 +16,6 @@ body {
     font-family: Arial, sans-serif;
     overflow: hidden;
     text-align: center;
-    position: relative;
 }
 
 .container {
@@ -27,6 +26,7 @@ body {
 h1 {
     font-size: 2.5rem;
     color: white;
+    transition: 0.3s ease;
 }
 
 button {
@@ -36,11 +36,7 @@ button {
     border-radius: 25px;
     cursor: pointer;
     margin: 10px;
-    transition: transform 0.2s ease;
-}
-
-button:hover {
-    transform: scale(1.05);
+    transition: all 0.2s ease;
 }
 
 #yesBtn {
@@ -51,22 +47,22 @@ button:hover {
 #noBtn {
     background-color: white;
     color: #ff4d6d;
-    position: fixed; /* Important */
+    position: fixed;
 }
 
-#link {
+#finalMessage {
     display: none;
-    margin-top: 20px;
-    font-size: 1.2rem;
+    font-size: 2rem;
     color: white;
 }
 
 a {
     color: white;
     font-weight: bold;
+    text-decoration: underline;
 }
 
-/* Heart styling */
+/* Hearts */
 .heart {
     position: fixed;
     bottom: -20px;
@@ -86,14 +82,15 @@ a {
 <body>
 
 <div class="container">
-    <h1>Will you be my Valentine? 💖</h1>
+    <h1 id="mainText">Will you be my Valentine? 💖</h1>
+
     <button id="yesBtn">Yes ❤️</button>
     <button id="noBtn">No 😢</button>
 
-    <div id="link">
-        💌 You made me the happiest! <br>
+    <div id="finalMessage">
+        Happy Valentine’s Day 💖 <br>
         <a href="https://yourlinkhere.com" target="_blank">
-            Click here for your surprise
+            Click here
         </a>
     </div>
 </div>
@@ -101,10 +98,24 @@ a {
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
-const link = document.getElementById("link");
+const finalMessage = document.getElementById("finalMessage");
+const mainText = document.getElementById("mainText");
 
-// Move NO button when CLICKED (not hover)
+let yesScale = 1;
+
+const sureMessages = [
+    "Are you sure? 🥺",
+    "Really sure?? 😢",
+    "Think again... 💔",
+    "That hurts 😭",
+    "Last chance... 💘",
+    "You don’t mean that 😔"
+];
+
+// Move NO button + grow YES + random message
 noBtn.addEventListener("click", () => {
+
+    // Move NO button inside visible screen
     const btnWidth = noBtn.offsetWidth;
     const btnHeight = noBtn.offsetHeight;
 
@@ -116,24 +127,38 @@ noBtn.addEventListener("click", () => {
 
     noBtn.style.left = randomX + "px";
     noBtn.style.top = randomY + "px";
+
+    // Grow YES button
+    yesScale += 0.2;
+    yesBtn.style.transform = `scale(${yesScale})`;
+
+    // Random "Are you sure" message
+    const randomMessage = sureMessages[Math.floor(Math.random() * sureMessages.length)];
+    mainText.innerText = randomMessage;
 });
 
-// YES button click
+// YES clicked
 yesBtn.addEventListener("click", () => {
-    link.style.display = "block";
 
-    // Create floating hearts smoothly
-    for (let i = 0; i < 25; i++) {
+    // Hide buttons
+    yesBtn.style.display = "none";
+    noBtn.style.display = "none";
+
+    // Hide question
+    mainText.style.display = "none";
+
+    // Show final message
+    finalMessage.style.display = "block";
+
+    // Create hearts
+    for (let i = 0; i < 30; i++) {
         const heart = document.createElement("div");
         heart.classList.add("heart");
         heart.innerHTML = "💖";
-
         heart.style.left = Math.random() * 100 + "vw";
         heart.style.animationDuration = (2 + Math.random() * 2) + "s";
-
         document.body.appendChild(heart);
 
-        // Remove heart after animation
         heart.addEventListener("animationend", () => {
             heart.remove();
         });
